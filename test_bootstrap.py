@@ -2,7 +2,6 @@ import pytest
 import numpy as np
 import statsmodels.api as sm
 from bootstrap import bootstrap_sample, bootstrap_ci, R_squared
-from sklearn.linear_model import LinearRegression
 
 def test_bootstrap_integration():
     """Test that bootstrap_sample and bootstrap_ci work together"""
