@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 import statsmodels.api as sm
-from bootstrap import bootstrap_sample, bootstrap_ci, r_squared
+from bootstrap import bootstrap_sample, bootstrap_ci, R_squared
 from sklearn.linear_model import LinearRegression
 
 def test_bootstrap_integration():
@@ -63,22 +63,22 @@ class TestRSquared:
     def test_r_squared_value(self):
         """Tests that the dimensions of the input are correct"""
         with pytest.raises(ValueError, match="X.shape[0] must equal len(y)"):
-            r_squared(np.array([[1, 2], [3, 4]]), np.array([1]))
+            R_squared(np.array([[1, 2], [3, 4]]), np.array([1]))
 
     def test_r_squared_bounds(self):
         """Tests that R-squared is between 0 and 1 for valid inputs"""
         X = np.array([[1, 2], [2, 3], [3, 4], [4, 5]])
         y = np.array([1, 2, 3, 4])
-        r2 = r_squared(X, y)
+        r2 = R_squared(X, y)
         assert 0 <= r2 <= 1
         
     def test_r_squared_type(self):
         """Tests that type errors are raised for invalid inputs"""
         with pytest.raises(TypeError, match="X must be array-like"):
-            r_squared("not an array", np.array([1, 2]))
+            R_squared("not an array", np.array([1, 2]))
         
         with pytest.raises(TypeError, match="y must be array-like"):
-            r_squared(np.array([[1, 2], [3, 4]]), "not an array")
+            R_squared(np.array([[1, 2], [3, 4]]), "not an array")
 
 
 
