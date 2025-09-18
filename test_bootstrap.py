@@ -6,18 +6,19 @@ from sklearn.linear_model import LinearRegression
 def test_bootstrap_integration():
     """Test that bootstrap_sample and bootstrap_ci work together"""
     # This test should initially fail
-    """small_design_matrix = np.array([[1, 2, 3, 4, 5], [2, 3, 4, 5, 6]])
+    small_design_matrix = np.array([[1, 2, 3, 4, 5], [2, 3, 4, 5, 6]])
     small_response_vector = np.array([1, 2])
     n_bootstrap = 1000
-    def compute_beta(X, y):
-        This function performs linear regression and returns beta
-        reg = LinearRegression().fit(X, y)
-        return reg.coef_
+    def mean_response(X, y):
+        return np.mean(y)
+    bootstrap_stats = bootstrap_sample(small_design_matrix, small_response_vector, mean_response, n_bootstrap)
+    ci = bootstrap_ci(bootstrap_stats, alpha=0.05)
     
-    bootstrap_stats = bootstrap_sample(small_design_matrix, small_response_vector, compute_beta, n_bootstrap)
-    ci = bootstrap_ci(bootstrap_stats, alpha=0.05)"""
-
-    pass
+    """Test that the bootstrap confidence interval is a tuple of length 2"""
+    assert isinstance(ci, tuple)
+    assert len(ci) == 2
+    assert ci[0] < ci[1]
+    
 
 class TestBootstrapCI:
     def test_bootstrap_ci_length(self):
