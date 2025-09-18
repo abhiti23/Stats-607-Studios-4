@@ -44,15 +44,20 @@ def bootstrap_sample(X, y, compute_stat, n_bootstrap=1000):
     if not callable(compute_stat):
         raise TypeError("compute_stat must be callable")
     if not isinstance(n_bootstrap, int):
-        raise TypeError("n_bootstrap must be an integer")
+        raise TypeError("n_bootstrap must be a positive integer")
     if not isinstance(X, (list, np.ndarray)):
-        raise TypeError("X must be array-like")
+        raise TypeError("X must be a 1D or 2D array-like")
     if not isinstance(y, (list, np.ndarray)):
-        raise TypeError("y must be array-like")
+        raise TypeError("y must be a 1D array-like")
     
     """Check that X and y have compatible shapes"""
     if X.shape[0] != len(y):
-        raise ValueError("X and y must have the same number of samples")
+        raise ValueError("X and y must have the same length")
+    
+    """Test that compute_stat returns a scalar"""
+    test_stat = compute_stat(X, y)
+    if not np.isscalar(test_stat):
+        raise ValueError("output of compute_stat must be a scalar")
     
     bootstrap_stats = []
     for _ in range(n_bootstrap):
