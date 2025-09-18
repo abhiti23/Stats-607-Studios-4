@@ -55,5 +55,13 @@ class TestBootstrapSample:
             results = bootstrap_sample(X=X, y=y, compute_stat=compute_stat, n_bootstrap=10)
             assert type(results) == np.ndarray
             
+        with pytest.raises(ValueError, match="output must be a 1D array-like"):
+            X = np.random.normal(size=(10,))
+            y = np.random.normal(size=(10,))
+            compute_stat = np.corrcoef  # Returns a 2D array
+            n_bootstrap = 10
+            results = bootstrap_sample(X=X, y=y, compute_stat=compute_stat, n_bootstrap=n_bootstrap)
+            assert len(results) == n_bootstrap
+            
         
 
