@@ -7,7 +7,7 @@ Strong linear model in regression
     (if you have an intercept beta_0), 
         R^2 ~ Beta(p/2, (n-p-1)/2)
 """
-
+import numpy as np
 
 def bootstrap_sample(X, y, compute_stat, n_bootstrap=1000):
     """
@@ -28,9 +28,41 @@ def bootstrap_sample(X, y, compute_stat, n_bootstrap=1000):
     numpy.ndarray
         Array of bootstrap statistics, length n_bootstrap
 
-    ....
+    Raises
+    ------
+    ValueError
+        If X.shape[0] != len(y)
+    TypeError
+        If compute_stat is not callable
+    TypeError
+        If n_bootstrap is not an integer
+    TypeError
+        If X or y are not array-like
+    
     """
-    pass
+    """Check that the inputs are the appropriate types"""
+    if not callable(compute_stat):
+        raise TypeError("compute_stat must be callable")
+    if not isinstance(n_bootstrap, int):
+        raise TypeError("n_bootstrap must be an integer")
+    if not isinstance(X, (list, np.ndarray)):
+        raise TypeError("X must be array-like")
+    if not isinstance(y, (list, np.ndarray)):
+        raise TypeError("y must be array-like")
+    
+    """Check that X and y have compatible shapes"""
+    if X.shape[0] != len(y):
+        raise ValueError("X and y must have the same number of samples")
+    
+    bootstrap_stats = []
+    for _ in range(n_bootstrap):
+        indices = np.random.choice(X.shape[0], size=X.shape[0], replace=True)
+        X_boot = X[indices]
+        y_boot = y[indices]
+        stat = compute_stat(X_boot, y_boot)
+        bootstrap_stats.append(stat)
+    return np.array(bootstrap_stats)
+    
 
 def bootstrap_ci(bootstrap_stats, alpha=0.05):
     """
