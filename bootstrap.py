@@ -1,4 +1,3 @@
-
 """
 Strong linear model in regression
     Y = X beta + eps, where eps~ N(0, sigma^2 I)
@@ -7,7 +6,9 @@ Strong linear model in regression
     (if you have an intercept beta_0), 
         R^2 ~ Beta(p/2, (n-p-1)/2)
 """
+from xml.parsers.expat import model
 import numpy as np
+import statsmodels.api as sm
 
 def bootstrap_sample(X, y, compute_stat, n_bootstrap=1000):
     """
@@ -87,7 +88,23 @@ def bootstrap_ci(bootstrap_stats, alpha=0.05):
     
     ....
     """
-    pass
+    
+    if len(bootstrap_stats) < 2:
+        raise ValueError("bootstrap_stats must contain at least 2 values")
+    
+    if not (0 < alpha < 1):
+        raise ValueError("alpha must be between 0 and 1")
+
+    if not isinstance(bootstrap_stats,  np.ndarray):
+        raise TypeError("bootstrap_stats must be array-like")
+    
+    if not isinstance(alpha, float):
+        raise TypeError("alpha must be a float")   
+    
+    ub = np.percentile(bootstrap_stats, 100 * (1 - alpha / 2))
+    lb = np.percentile(bootstrap_stats, 100 * (alpha / 2))  
+
+    return (lb, ub)
 
 def R_squared(X, y):
     """
@@ -109,4 +126,20 @@ def R_squared(X, y):
     ValueError
         If X.shape[0] != len(y)
     """
-    pass
+    
+
+    if X.shape[0] != len(y):
+        raise ValueError("X.shape[0] must equal len(y)")
+    
+    if type(X) is not np.ndarray:
+         raise ValueError("X must be array-like")
+     
+    if type(y) is not np.ndarray:
+        raise ValueError("y must be array-like")
+
+    ols = sm.OLS(y, X)
+    results = ols.fit()
+
+    # 3. Access the R-squared value
+    r_squared = results.rsquared
+    return r_squared
